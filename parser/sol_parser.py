@@ -1,5 +1,6 @@
 import sys
 import pprint
+import json
 from .interface import ParserInterface 
 from pathlib import Path
 
@@ -17,8 +18,11 @@ class Component(object):
 	def __init__(self,cmp_info = None):
 		self._info = cmp_info
 	
-	def log(self):
-		pprint.pprint(self._info)
+	def log(self, log_file=None):
+		if not log_file:
+			pprint.pprint(self._info)
+		else:
+			pprint.pprint(self._info, log_file)
 
 
 class SolParser(ParserInterface):
@@ -101,12 +105,12 @@ class SolParser(ParserInterface):
 
 
 
-	def generate_component(self):
-		"""Writes component.csv
+	def generate_components(self):
+		"""Generates components out of a SOL file
 		"""
 		
 		data = self.extract_text()
-		component_list = []
+		components_list = []
 		it = 0 # iteration counter
 		total_lines = len(data)
 
@@ -115,8 +119,10 @@ class SolParser(ParserInterface):
 			if line.startswith("*"):
 				cmp = self.get_component_info(data[it:it+12])
 				# cmp.log()
+				components_list.append(cmp)
 				it+=12
 			else:
 				it+=1
 
-		print("Component names are ",component_names)
+		return components_list
+

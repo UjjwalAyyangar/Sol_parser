@@ -7,6 +7,5 @@ if __name__ == '__main__':
 
 	parse_obj = SolParser()
 	parse_obj.load_data_src(dir_path,file_name)
-	print(parse_obj.file_name)
-	print(parse_obj.dir_path)
-	parse_obj.generate_component()	
+	components = parse_obj.generate_components()
+	# components[0].log()	
