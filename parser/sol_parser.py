@@ -1,5 +1,25 @@
+import sys
+import pprint
 from .interface import ParserInterface 
 from pathlib import Path
+
+class Component(object):
+	
+	@property
+	def info(self):
+		return self.info
+
+	@info.setter
+	def info(self, cmp_info):
+		self.info = cmp_info
+
+
+	def __init__(self,cmp_info = None):
+		self._info = cmp_info
+	
+	def log(self):
+		pprint.pprint(self._info)
+
 
 class SolParser(ParserInterface):
 	
@@ -32,10 +52,71 @@ class SolParser(ParserInterface):
 		with open(full_path,'r') as f:
 			return(f.readlines())
 
+	
+	def get_component_info(self, content):
+		""" Parses information inside a component into a python dictionary object
+		
+		Parameters:
+			content(list): A list of lines containing the information inside a component
+		
+		Returns:
+			cmp(Component): An object of type Component
+		"""
+		# each component has 12 lines
+
+		cmp_info = {}
+
+		# Metadata	
+		meta = content[0].split(' ')
+		cmp_info['name'] = meta[0][1 : len(meta[0])]
+			
+		# Geographical info	
+		geo_info = list(filter(None,content[2].split(' ')))
+		cmp_info['country'] = geo_info[1]
+		cmp_info['lat'] = geo_info[2]
+		cmp_info['lng'] = geo_info[3]
+		
+		# Measures
+		measures = list(filter(None,content[4].split(' ')))
+		m_vars = ["SCOM",  "SALB",  "SLU1",  "SLDR",  "SLRO",  "SLNF",  "SLPF",  "SMHB",  "SMPX",  "SMKE"]
+		
+		for i,var_name in enumerate(m_vars):
+			cmp_info[var_name] = measures[i]		
+
+		# Readings
+		readings = [] 
+		for line in content[6:len(content)]:
+			temp = list(filter(None,line.split(' ')))
+			readings.append(temp)
+		
+		readings = [*zip(*readings)]
+		var_names = ['SLB' ,'SLMH' ,'SLLL', 'SDUL', 'SSAT',  'SRGF',  'SSKS',  'SBDM',  'SLOC',  'SLCL',  'SLSI',  'SLCF',  'SLNI',  'SLHW',  'SLHB',  'SCEC',  'SADC'] 
+		
+		for i,var_name in enumerate(var_names):
+			cmp_info[var_name] = readings[i]
+
+		
+		cmp = Component(cmp_info)
+		return (cmp)
+
+
 
 	def generate_component(self):
 		"""Writes component.csv
 		"""
 		
 		data = self.extract_text()
-		print(data)
+		component_list = []
+		it = 0 # iteration counter
+		total_lines = len(data)
+
+		while it<total_lines:
+			line = data[it]
+			if line.startswith("*"):
+				cmp = self.get_component_info(data[it:it+12])
+				# cmp.log()
+				it+=12
+			else:
+				it+=1
+
+		print("Component names are ",component_names)
