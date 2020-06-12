@@ -1,11 +1,11 @@
 import sys
 import pprint
-import json
 from .interface import ParserInterface 
 from pathlib import Path
 
 class EpicComponent(object):
-	
+	"""Data Element which holds information about each component in the sol file
+	"""
 	@property
 	def info(self):
 		return self._info
@@ -26,6 +26,8 @@ class EpicComponent(object):
 
 
 class SolParser(ParserInterface):
+	"""Class which realizes ParserInterface to parse epic sol files
+	"""
 	
 	@property
 	def file_name(self):
@@ -60,7 +62,7 @@ class SolParser(ParserInterface):
 	def get_component_info(self, content):
 		""" Parses information inside a component into a python dictionary object
 		
-		Parameters:
+		Args:
 			content(list): A list of lines containing the information inside a component
 		
 		Returns:
@@ -94,21 +96,23 @@ class SolParser(ParserInterface):
 			readings.append(temp)
 		
 		readings = [*zip(*readings)]
-		var_names = ['SLB' ,'SLMH' ,'SLLL', 'SDUL', 'SSAT',  'SRGF',  'SSKS',  'SBDM',  'SLOC',  'SLCL',  'SLSI',  'SLCF',  'SLNI',  'SLHW',  'SLHB',  'SCEC',  'SADC'] 
+		var_names = ['SLB' ,'SLMH' ,'SLLL', 'SDUL', 'SSAT',  'SRGF',  'SSKS',  'SBDM',
+		  'SLOC',  'SLCL',  'SLSI',  'SLCF',  'SLNI',  'SLHW',  'SLHB',  'SCEC',  'SADC'] 
 		
 		for i,var_name in enumerate(var_names):
 			cmp_info[var_name] = readings[i]
 
 		
 		cmp = EpicComponent(cmp_info)
-		#cmp.log()
-		#sys.exit(0)
 		return (cmp)
 
 
 
 	def generate_components(self):
-		"""Generates components out of a SOL file
+		"""Generates a list of components out of a SOL file
+
+		Returns:
+			list of Data Elements of type EpicComponent 
 		"""
 		
 		data = self.extract_text()

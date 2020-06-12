@@ -5,6 +5,8 @@ from parser import SolParser
 import pandas as pd
 
 class Generator(object):
+	"""A class for generating soil input files for epic simulations."""
+
 	def __init__(self, dir_path, file_name):
 		self._sol_parser = SolParser(dir_path,file_name)
 		self._components = self._sol_parser.generate_components()
@@ -44,10 +46,3 @@ class Generator(object):
 		# write components.csv
 		df.to_csv(fname, index=False, encoding='utf-8')	
 							
-				
-			
-			
-		 
-
-		
-	
