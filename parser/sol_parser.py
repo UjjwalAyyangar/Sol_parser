@@ -4,15 +4,15 @@ import json
 from .interface import ParserInterface 
 from pathlib import Path
 
-class Component(object):
+class EpicComponent(object):
 	
 	@property
 	def info(self):
-		return self.info
+		return self._info
 
 	@info.setter
 	def info(self, cmp_info):
-		self.info = cmp_info
+		self._info = cmp_info
 
 
 	def __init__(self,cmp_info = None):
@@ -45,7 +45,7 @@ class SolParser(ParserInterface):
 		self._dir_path = dir_path	
 			
 
-	def load_data_src(self, dir_path: Path, file_name:str):
+	def __init__(self, dir_path: Path, file_name:str):
 		self.file_name = file_name
 		self.dir_path = dir_path
 
@@ -100,7 +100,9 @@ class SolParser(ParserInterface):
 			cmp_info[var_name] = readings[i]
 
 		
-		cmp = Component(cmp_info)
+		cmp = EpicComponent(cmp_info)
+		#cmp.log()
+		#sys.exit(0)
 		return (cmp)
 
 
@@ -125,4 +127,5 @@ class SolParser(ParserInterface):
 				it+=1
 
 		return components_list
+
 

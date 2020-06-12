@@ -31,12 +31,6 @@ class ParserInterface(metaclass=abc.ABCMeta):
 		return
 	
 	@abc.abstractmethod
-	def load_data_src(self, dir_path: Path, file_name: str):
-		"""Load in the file for extracting text."""
-		
-		raise NotImplementedError
-	
-	@abc.abstractmethod
 	def extract_text(self) -> list:
 		"""Extract text from the loaded file."""
 		
