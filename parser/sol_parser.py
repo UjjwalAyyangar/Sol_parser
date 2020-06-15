@@ -3,7 +3,7 @@ import pprint
 from .interface import ParserInterface 
 from pathlib import Path
 
-class EpicComponent(object):
+class DssatComponent(object):
 	"""Data Element which holds information about each component in the sol file
 	"""
 	@property
@@ -103,7 +103,7 @@ class SolParser(ParserInterface):
 			cmp_info[var_name] = readings[i]
 
 		
-		cmp = EpicComponent(cmp_info)
+		cmp = DssatComponent(cmp_info)
 		return (cmp)
 
 

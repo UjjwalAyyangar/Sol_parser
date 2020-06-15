@@ -6,4 +6,5 @@ if __name__ == '__main__':
 	dir_path = Path("""/gpfs/data1/cmongp/ujjwal/tanzania/tanzania_soil/""")
 	
 	gen = g.Generator(dir_path, file_name)
-	gen.write_components_csv()
+	gen.epic_components()
+	# gen.write_components_csv()

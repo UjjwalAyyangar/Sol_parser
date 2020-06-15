@@ -2,6 +2,8 @@ import sys
 sys.path.append("..")
 
 from parser import SolParser
+from mapper import EpicMapper 
+
 import pandas as pd
 
 class Generator(object):
@@ -10,6 +12,15 @@ class Generator(object):
 	def __init__(self, dir_path, file_name):
 		self._sol_parser = SolParser(dir_path,file_name)
 		self._components = self._sol_parser.generate_components()
+		self._epic_mapper = EpicMapper(self._components)
+
+	def epic_components(self):
+		dsat_cmp = self._components[0]
+		epic_cmp = self._epic_mapper.to_epic(dsat_cmp)
+		
+		epic_cmp.log()
+		sys.exit(0)
+		
 
 	def write_components_csv(self):
 		fname = "components.csv"
@@ -24,7 +35,7 @@ class Generator(object):
 		mukey_counter = 1
 		cokey_counter = 56
 
-		for cmp in self._components:
+		for cmp in self._components[1:50]:
 			cmp_info = cmp.info
 
 			rows = []
