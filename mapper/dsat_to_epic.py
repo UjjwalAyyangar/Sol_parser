@@ -55,6 +55,13 @@ class EpicMapper(object):
 		return (str(grps.index(slmh)+1))
 
 
+	def calc_z(self,slb):
+		return [round(float(x)/10,2) for x in slb]
+
+
+	def calc_satc(self, ssks):
+		return [round(float(x)*10,2) for x in ssks]
+
 	def to_epic(self, dssat_component=None):
 		d_cmp_info = dssat_component.info
 		
@@ -62,7 +69,7 @@ class EpicMapper(object):
 		
 		cmp_info['SALB'] = d_cmp_info['SALB']
 		cmp_info['HSG'] = [self.calc_hsg(slmh) for slmh in d_cmp_info['SLMH']]
-		cmp_info['Z'] = d_cmp_info['SLB']
+		cmp_info['Z'] = self.calc_z(d_cmp_info['SLB'])
 		cmp_info['BD'] = d_cmp_info['SBDM']
 		cmp_info['UW'] = d_cmp_info['SLLL']
 		cmp_info['FC'] = d_cmp_info['SDUL']
@@ -76,7 +83,7 @@ class EpicMapper(object):
 		cmp_info['SMB'] = self.calc_sob(cmp_info['PH'], cmp_info['CEC'])
 
 		cmp_info['WOC'] = d_cmp_info['SLOC']
-		cmp_info['SATC'] = d_cmp_info['SSKS']
+		cmp_info['SATC'] = self.calc_satc(d_cmp_info['SSKS'])
 		  
 		cmp = EpicComponent(cmp_info)
 		return (cmp) 
