@@ -30,9 +30,19 @@ class EpicComponent(object):
 	
 
 class EpicMapper(object):
+
+	@property
+	def epic_components(self):
+		return self._components
+
+	@epic_components.setter
+	def epic_component(self, cmps):
+		self._components = cmps
+
+
 	def __init__(self, dssat_components=None):
 		self._dssat_components = dssat_components
-		self._components =  None
+		self._components =  []
 
 	def calc_sob(self, ph, cec):
 		sob_list = []
@@ -66,7 +76,7 @@ class EpicMapper(object):
 		d_cmp_info = dssat_component.info
 		
 		cmp_info = {}
-		
+		cmp_info["ID"] = d_cmp_info["name"]	
 		cmp_info['SALB'] = d_cmp_info['SALB']
 		cmp_info['HSG'] = [self.calc_hsg(slmh) for slmh in d_cmp_info['SLMH']]
 		cmp_info['Z'] = self.calc_z(d_cmp_info['SLB'])
@@ -88,9 +98,10 @@ class EpicMapper(object):
 		cmp = EpicComponent(cmp_info)
 		return (cmp) 
 	
-	def epic_components(self):
-		for dsat_cmp in self.dssat_components:
-			self._components.append(to_epic(dsat_cmp))
+	def gen_epic_components(self):
+		cmps = []
+		for dsat_cmp in self._dssat_components:
+			cmps.append(self.to_epic(dsat_cmp))
 	
-		return self._components
+		self._components = cmps
 

@@ -1,4 +1,6 @@
 import sys
+import os
+from pathlib import Path
 sys.path.append("..")
 
 from parser import SolParser
@@ -9,18 +11,73 @@ import pandas as pd
 class Generator(object):
 	"""A class for generating soil input files for epic simulations."""
 
-	def __init__(self, dir_path, file_name):
+	def __init__(self, dir_path, file_name, country_name):
 		self._sol_parser = SolParser(dir_path,file_name)
 		self._components = self._sol_parser.generate_components()
 		self._epic_mapper = EpicMapper(self._components)
+		self.country_name = country_name
+
+	def get_country_prefix(self):
+		prefix = {
+			"tanzania":"TZ"
+		}
+
+		return prefix[country_name]
 
 	def epic_components(self):
-		dsat_cmp = self._components[0]
-		epic_cmp = self._epic_mapper.to_epic(dsat_cmp)
+		self._epic_mapper.gen_epic_components()
+		slope_info = self.read_slopes_csv()
+		ids_left = []
+		for cmp in self._epic_mapper.epic_components:
+			old_info = cmp.info
+			ID = old_info["ID"][3:]
+			query = 'id == "{}"'.format(ID)
+			row = slope_info.query(query)
+
+			try:
+				old_info["slope"] = round(float(row["slope"]),2)
+				old_info["slope_length"] = round(float(row["slope_length"]),2)
+			except:
+			
+				ids_left.append(ID)
+				continue
+			
+			cmp.info = old_info
+
+		if len(ids_left)!=0:
+			print("Following ids were left",ids_left)
+			print("Total left = ",len(ids_left))
+			print("Total = ",len(self._epic_mapper.epic_components))
+			sys.exit(0)
+
+		self._epic_mapper.epic_components[5].log()
 		
-		epic_cmp.log()
-		sys.exit(0)
+	
+		#epic_cmp.log()
 		
+
+	def generate_slopes_csv(self):
+		root = Path(os.getcwd())
+		slope_dir = root/Path("""generator/slope/""")
+		os.chdir(slope_dir)
+			
+		# run the script
+		cmd = "Rscript main.R {} > out.txt".format(self.country_name)
+	
+		os.system(cmd)
+		os.system("rm -rf out.txt")
+
+		os.chdir(root)
+
+	def read_slopes_csv(self):
+		root = Path(os.getcwd())
+		slope_file = root/Path("""generator/slope/slope_files/slope_info.csv""")
+		slope_info = pd.read_csv(slope_file)
+	
+		return slope_info	
+
+	
+
 
 	def write_components_csv(self):
 		fname = "components.csv"
