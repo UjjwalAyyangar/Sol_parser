@@ -66,7 +66,7 @@ class EpicMapper(object):
 
 
 	def calc_z(self,slb):
-		return [round(float(x)/10,2) for x in slb]
+		return [round(float(x)/100,2) for x in slb]
 
 
 	def calc_satc(self, ssks):
