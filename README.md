@@ -7,6 +7,6 @@ Used to parse sol files used in epic, and generate the input files required for 
 ```python
 	import generator as g
 	gen = g.Generator(dir_path, file_name)
-	gen.write_components_csv()
+	gen.generate_sol_files()
 ```
 

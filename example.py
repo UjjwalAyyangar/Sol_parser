@@ -9,5 +9,5 @@ if __name__ == '__main__':
 	#gen.generate_slopes_csv("tanzania")
 	#gen.read_slopes_csv()
 	#gen.epic_components()
-	gen.sol_files()
+	gen.generate_sol_files()
 	# gen.write_components_csv()

@@ -76,12 +76,28 @@ class Generator(object):
 
 		return line
 
-	def sol_files(self):
-		self.epic_components() # creates all the components
-		cmp = self._epic_mapper.epic_components[0].info
+	def generate_sol_files(self):
+		print("Fetching epic components ...")
+		self.epic_components()
+		print("Generating sol file for each component")
+		cmps = self._epic_mapper.epic_components
+		total = len(cmps)
+		for cmp in cmps:
+			print("Left =",total)
+			self.generate_sol_file(cmp.info)
+			total-=1
+
+	def generate_sol_file(self, cmp):
 		
-		file_name = "{}.SOL".format(cmp["ID"][3:])
-		with open(file_name,'w') as f:
+		file_name = Path("{}.SOL".format(cmp["ID"][3:]))
+		sol_dir = Path("""soil_files""")
+		file_path = sol_dir/file_name
+	
+		if not os.path.exists(sol_dir):
+			os.makedirs(sol_dir)
+		
+		
+		with open(file_path,'w') as f:
 			# line 1
 			f.write("ID: {}\n".format(cmp["ID"][3:]))
 			
@@ -116,8 +132,8 @@ class Generator(object):
 			f.write("    .004    .006    .008    .009    .010    .010    .010" + "\n")
 			f.write(" ")	
 
-		print("Finished one soil file")	
-		print(cmp)
+		#print("Finished one soil file")	
+		#print(cmp)
 
 	def generate_slopes_csv(self):
 		root = Path(os.getcwd())
