@@ -98,10 +98,10 @@ class Generator(object):
 			
 			# line 4 onwards
 
-			epic_vars = ["Z", "BD", "UW", "FC", "SAN","WN","PH","SMB","WOC","CAC","CEC","ROK",
+			epic_vars = ["Z", "BD", "UW", "FC", "SAN","SIL","WN","PH","SMB","WOC","CAC","CEC","ROK",
 			"CNDS","PKRZ","RSD","BDD","PSP","SATC","HCL","WPO", "EXCK","ECND","STFR","ST","CPRV","CPRH",
 			"WLS","WLM","WLSL","WLSC","WLMC", "WLSLC","WLSLNC","WBMC","WHSC","WHPC",
-			"WLSN","WLMN","WBMN","WHSN","WHPN","OBC"]
+			"WLSN","WLMN","WBMN","WHSN","WHPN"]
 
 			#print("total vars",len(epic_vars))
 			
@@ -114,7 +114,7 @@ class Generator(object):
 			f.write("    275.    200.    150.    140.    130.    120.    110." + "\n")
 			f.write("    0.20    0.40    0.50    0.60    0.80    1.00    1.20" + "\n")
 			f.write("    .004    .006    .008    .009    .010    .010    .010" + "\n")
-			f.write("")	
+			f.write(" ")	
 
 		print("Finished one soil file")	
 		print(cmp)

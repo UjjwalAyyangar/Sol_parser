@@ -61,8 +61,9 @@ class EpicMapper(object):
 		return sob_list
 	
 	def calc_hsg(self, slmh):
-		grps = ["A","B","C","AB","AC","BA","BC","CA","CB","ABC"]
-		return (str(grps.index(slmh)+1))
+		first_letter = slmh[0]
+		grps = ["A","B","C"]#,"AB","AC","BA","BC","CA","CB","ABC"]
+		return (str(grps.index(first_letter)+1))
 
 
 	def calc_z(self,slb):
