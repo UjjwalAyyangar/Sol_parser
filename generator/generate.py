@@ -111,6 +111,10 @@ class Generator(object):
 				f.write(self.get_line(l)+"\n")
 
 
+			f.write("    275.    200.    150.    140.    130.    120.    110." + "\n")
+			f.write("    0.20    0.40    0.50    0.60    0.80    1.00    1.20" + "\n")
+			f.write("    .004    .006    .008    .009    .010    .010    .010" + "\n")
+			f.write("")	
 
 		print("Finished one soil file")	
 		print(cmp)
