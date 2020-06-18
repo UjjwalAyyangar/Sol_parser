@@ -48,13 +48,72 @@ class Generator(object):
 			print("Following ids were left",ids_left)
 			print("Total left = ",len(ids_left))
 			print("Total = ",len(self._epic_mapper.epic_components))
-			sys.exit(0)
 
-		self._epic_mapper.epic_components[5].log()
+		#self._epic_mapper.epic_components[5].log()
 		
 	
 		#epic_cmp.log()
+
+	def adjust(self, val):
+		new_val= "{:0.3f}".format(float(val))
+		width = 8
+		new_val = f'{new_val:>{width}}'
+		return new_val
+
+		# return str(round(float(val),3))
+
+	def add(self, src, trg):
+		for s in src:
+			trg.append(s)
+	
+		return trg
+
+	def get_line(self, vals):
+		line = ""
+		for val in vals:
+			new_val = self.adjust(val)
+			line+=new_val
+
+		return line
+
+	def sol_files(self):
+		self.epic_components() # creates all the components
+		cmp = self._epic_mapper.epic_components[0].info
 		
+		file_name = "{}.SOL".format(cmp["ID"][3:])
+		with open(file_name,'w') as f:
+			# line 1
+			f.write("ID: {}\n".format(cmp["ID"][3:]))
+			
+			# line 2
+			alb = self.adjust(cmp["SALB"])
+			hsg = self.adjust(cmp["HSG"][-1])
+			line2 = [alb,hsg,"0.000","0.000","0.000","0.000","5.000","100.000","0.000","0.000"]
+			f.write(self.get_line(line2)+"\n")
+			
+			# line 3
+			tsla = self.adjust(len(cmp["HSG"]) + 1)
+			line3 = [tsla,"0.000","100.000","0.000","0.000","0.000","0.000","0.014","0.726","0.000"]
+			f.write(self.get_line(line3)+"\n")
+			
+			# line 4 onwards
+
+			epic_vars = ["Z", "BD", "UW", "FC", "SAN","WN","PH","SMB","WOC","CAC","CEC","ROK",
+			"CNDS","PKRZ","RSD","BDD","PSP","SATC","HCL","WPO", "EXCK","ECND","STFR","ST","CPRV","CPRH",
+			"WLS","WLM","WLSL","WLSC","WLMC", "WLSLC","WLSLNC","WBMC","WHSC","WHPC",
+			"WLSN","WLMN","WBMN","WHSN","WHPN","OBC"]
+
+			#print("total vars",len(epic_vars))
+			
+			inp = [cmp[x] for x in epic_vars]
+	
+			for l in inp:
+				f.write(self.get_line(l)+"\n")
+
+
+
+		print("Finished one soil file")	
+		print(cmp)
 
 	def generate_slopes_csv(self):
 		root = Path(os.getcwd())
@@ -75,8 +134,6 @@ class Generator(object):
 		slope_info = pd.read_csv(slope_file)
 	
 		return slope_info	
-
-	
 
 
 	def write_components_csv(self):

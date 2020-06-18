@@ -10,13 +10,13 @@ class EpicComponent(object):
 	def info(self, cmp_info):
 		self._info = cmp_info
 		default_vars = ["CAC", "ROK", "BDD", "WN", "CNDS","PKRZ",
-			"RSD", "PSP", "HCL", "WPO", "EXCK", "ECND", "SFTR",
+			"RSD", "PSP", "HCL", "WPO", "EXCK", "ECND", "STFR",
 			"ST", "CPRV", "CPRH", "WLS", "WLM", "WLSL", "WLSC",
 			"WLMC", "WLSLC","WLSLNC", "WBMC", "WHSC", "WHPC",
 			"WLSN", "WLMN", "WBMN", "WHSN", "WHPN", "OBC"]
 
 		for var in default_vars:
-			self._info[var] = "0"
+			self._info[var] = ["0.000"]*6
 
 	
 	def __init__(self, cmp_info = None):

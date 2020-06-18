@@ -8,5 +8,6 @@ if __name__ == '__main__':
 	gen = g.Generator(dir_path, file_name, country_name)
 	#gen.generate_slopes_csv("tanzania")
 	#gen.read_slopes_csv()
-	gen.epic_components()
+	#gen.epic_components()
+	gen.sol_files()
 	# gen.write_components_csv()
