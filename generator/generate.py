@@ -3,19 +3,27 @@ import os
 from pathlib import Path
 sys.path.append("..")
 
-from parser import SolParser
-from mapper import EpicMapper 
+from parser import SolParser, CsvParser
+from mapper import EpicMapper, CsvEpicMapper 
 
 import pandas as pd
 
 class Generator(object):
 	"""A class for generating soil input files for epic simulations."""
 
-	def __init__(self, dir_path, file_name, country_name):
-		self._sol_parser = SolParser(dir_path,file_name)
-		self._components = self._sol_parser.generate_components()
-		self._epic_mapper = EpicMapper(self._components)
+	def __init__(self, dir_path, file_name, country_name, ftype="sol"):
+		if ftype=="sol":
+			self._parser = SolParser(dir_path,file_name)
+			self._components = self._parser.generate_components()
+			self._epic_mapper = EpicMapper(self._components)
+		else: # ftype is csv
+			self._parser = CsvParser(dir_path, file_name)
+			self._components = self._parser.generate_components()
+			self._epic_mapper = CsvEpicMapper(self._components)
+		
+		self.file_name = file_name	
 		self.country_name = country_name
+		self.ftype = ftype
 
 	def get_country_prefix(self):
 		prefix = {
@@ -26,6 +34,9 @@ class Generator(object):
 
 	def epic_components(self):
 		self._epic_mapper.gen_epic_components()
+		if self.ftype != "sol":
+			return
+
 		slope_info = self.read_slopes_csv()
 		ids_left = []
 		for cmp in self._epic_mapper.epic_components:
@@ -71,6 +82,8 @@ class Generator(object):
 	def get_line(self, vals):
 		line = ""
 		for val in vals:
+			if "-" in str(val) or float(val)<0:
+				val = "0.000"
 			new_val = self.adjust(val)
 			line+=new_val
 
@@ -88,18 +101,25 @@ class Generator(object):
 			total-=1
 
 	def generate_sol_file(self, cmp):
-		
-		file_name = Path("{}.SOL".format(cmp["ID"][3:]))
+		if self.ftype !="sol":
+			f_id = cmp["ID"].replace(" ","_").replace(",","").lower()
+		else:
+			f_id = cmp["ID"][3:]	
+
+		file_name = Path("{}.SOL".format(f_id))
 		sol_dir = Path("""soil_files""")
-		file_path = sol_dir/file_name
+		file_dir = sol_dir/self.file_name[:-4]
+
+		file_path = file_dir/file_name
 	
-		if not os.path.exists(sol_dir):
-			os.makedirs(sol_dir)
-		
+		if not os.path.exists(file_dir):
+			os.makedirs(file_dir)
+	
+			
 		
 		with open(file_path,'w') as f:
 			# line 1
-			f.write("ID: {}\n".format(cmp["ID"][3:]))
+			f.write("ID: {}\n".format(f_id))
 			
 			# line 2
 			alb = self.adjust(cmp["SALB"])
@@ -123,6 +143,7 @@ class Generator(object):
 			
 			inp = [cmp[x] for x in epic_vars]
 	
+			# print(inp)
 			for l in inp:
 				f.write(self.get_line(l)+"\n")
 
